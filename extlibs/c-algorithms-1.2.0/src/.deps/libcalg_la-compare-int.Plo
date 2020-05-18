@@ -1,0 +1,6 @@
+libcalg_la-compare-int.lo: compare-int.c /usr/include/stdc-predef.h \
+ compare-int.h
+
+/usr/include/stdc-predef.h:
+
+compare-int.h:

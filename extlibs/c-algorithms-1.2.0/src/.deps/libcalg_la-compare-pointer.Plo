@@ -1,0 +1,6 @@
+libcalg_la-compare-pointer.lo: compare-pointer.c \
+ /usr/include/stdc-predef.h compare-pointer.h
+
+/usr/include/stdc-predef.h:
+
+compare-pointer.h:

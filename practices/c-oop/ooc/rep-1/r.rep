@@ -1,0 +1,61 @@
+% -r			// implement -r option
+
+/*----------------------------------------------------------------------------- `n
+ *  COPYRIGHT  (C)  2013-2014  Arrive  Technologies  Inc.  `n
+ *  `n
+ *  The  information  contained  herein  is  confidential  property  of  Arrive  `n
+ *  Technologies.  The  use,  copying,  transfer  or  disclosure  of  such  information  is  `n
+ *  prohibited  except  by  express  written  agreement  with  Arrive  Technologies.  `n
+ *  `n
+ *  Filename     :  `class .r `n
+ *  Description  :  This  file  contains  representation  for  `class  class. `n
+ *  History      : `n
+ *                `date `t Initial  version  `n
+ *  `n
+ *----------------------------------------------------------------------------*/ `n `n
+
+#ifndef  `class _R `n
+#define  `class _R `n `n
+
+#ifdef  __cplusplus  `n
+extern  "C"  {  `n
+#endif  `n `n
+
+#include  " `super .r" `n `n
+
+`{prot
+  `{if `class `
+    `line `n
+  `} `{else `n
+    /**  @brief  Internal  data  of  `class  class  */ `n
+    struct  `class `n {  `n 
+`t const  struct  `super  _;  /**<  Superclass  `super  */ `n
+      `{struct `class
+`t	`const `type  `name ;  /**<  `name  */  `n
+      `}
+    }; `n `n
+
+    `{if `newmeta 1
+
+      /**  @brief  Metaclass  of  `class  class  */ `n
+      struct  `meta `n {  `n 
+      `t const  struct  `supermeta  _;  /**<  Superclass  `supermeta  */ `n
+        `{%- `t `%link `n `}
+        `{%+ `t `%link `n `}
+      }; `n `n
+
+      `{%- `%super-header ; `n `}n
+      `{%+ `%super-header ; `n `}n
+
+      /**  @brief  Metaclass  descriptor  for  `class  class  */ `n
+      extern  const  AtAny*   `meta (void); `n `n
+      
+    `}fi
+  `}fi
+`}n
+
+#ifdef  __cplusplus  `n
+} `n
+#endif `n
+
+#endif `t /* `t `class _R `t */ `n

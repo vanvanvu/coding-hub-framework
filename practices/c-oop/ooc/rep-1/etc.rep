@@ -1,0 +1,213 @@
+% include       // #include class interface and representation
+
+/*----------------------------------------------------------------------------- `n
+ *  COPYRIGHT  (C)  2013-2014  Arrive  Technologies  Inc.  `n
+ *  `n
+ *  The  information  contained  herein  is  confidential  property  of  Arrive  `n
+ *  Technologies.  The  use,  copying,  transfer  or  disclosure  of  such  information  is  `n
+ *  prohibited  except  by  express  written  agreement  with  Arrive  Technologies.  `n
+ *  `n
+ *  Filename     :  `class .c `n
+ *  Description  :  This  file  contains  implementation  for  `class  class. `n
+ *  History      : `n
+ *                `date `t Initial  version  `n
+ *  `n
+ *----------------------------------------------------------------------------*/ `n `n
+
+#include  " `class .h" `n
+#include  " `class .r" `n `n
+
+% methodHeader  // method header
+
+`{if `linkage %                 // static linkage
+
+  `%header `n { `n
+
+`} `{else                       // dynamic linkage
+  `{if `linkage %-  
+  static  `result  self _ `method ` \
+            ( `{() `const `type  `_ `name `}, `%va ) `n { `n
+  `} `{else
+  static  `result  class _ `method ` \
+            ( `{() `const `type  `_ `name `}, `%va ) `n { `n
+  `}fi
+
+`}fi
+
+% casts         // implement %casts request
+
+`{()                            // import
+  `{if `_ _
+    `{if `linkage %+ // class methods
+  `t `const struct  `cast *  desc  =  AtCast( `cast (),  _ `name ); `n
+    `} `{else       // other methods
+        `{if `ctor 0
+      `t `const struct  `cast *  `name  =  AtCast( `cast Desc(),  _ `name ); `n
+        `} `{else
+      `t `const struct  `cast *  `name  =  super_AtConstruct( `cast Desc(),  _ `name ,  args ); `n
+        `}fi
+    `}fi
+  `}fi
+`}n
+
+`{if `linkage %                 // for static linkage only
+  `%checks
+`}fi
+
+% checks        // check all other object parameters
+
+`{()
+  `{ifnot `cast ` `{ifnot `_ _
+`t AtCast( `cast Desc(),  `name ); `n
+  `}fi `}fi
+`}n
+
+% meta-ctor-loop    // loop over selector/method pairs for `class
+
+`t while  ((selector  =  va_arg(ap,  voidf))) `n
+`t { `t    voidf  method  =  va_arg(ap,  voidf); `n `n
+
+        `{%- `%link-it `}
+        `{%+ `%link-it `}
+`t } `n `n
+
+% link-it       // check and insert one selector/method pair
+
+`t  `t if  (selector  ==  (voidf)  `method ) `n
+`t  `t { `t  *  (voidf*)  &   self -> `method  =  method ; `n
+`t  `t  `t continue; `n
+`t  `t } `n
+
+% abstract-check-loop    // loop over all method to check for null
+`t /*  Check  if  the  class  is  abstract  (have  at  least  1  null  method)  */ `n
+   /* `{%- `%check-null `}
+    `{%+ `%check-null `} */
+    `n
+
+% check-null       // check for null method
+
+`t if  (!(self -> `method )) `n
+`t   `t {((struct  AtClass*)  self) ->isAbstract  =  true;  return  self;} `n
+
+% selectors     // generate selectors and superclass selectors
+
+`{%-
+  `%selector
+  `%super-selector
+`}
+
+`{%+
+  `%selector
+  `%super-selector
+`}
+
+% selector      // selector
+
+`%header `n { `n
+`%result
+`%ap
+`%classOf
+
+`%va_start
+`%ifmethod
+`%checks
+`%call
+`%va_end
+`%return
+} `n `n
+
+% result        // if necessary, define result variable
+
+`{ifnot `result void
+`t `result  result;
+`}n
+
+% ap            // if necessary, define argument list variable
+
+`{ifnot `,... `
+`t  va_list  ap;
+`}n
+
+% classOf       // class in which to find `method
+
+`{if `linkage %  // Static linkage
+  `t const  struct  `meta  *  desc  =  AtCast( `meta (),  _self); `n
+`} `{else
+  `{if `linkage %-  // Instance method
+    `{if `meta `metaroot  
+      `t  const  struct  `meta *  desc  =  AtClassOf(_self); `n
+    `} `{else
+      `t const  struct  `meta *  desc  =  ` \
+                  AtCast( `meta (),  AtClassOf(_self)); `n
+    `}n
+  `} `{else         // Class method
+    `{if `meta `metaroot  
+      `t const  struct  `meta *  desc  =  AtClassOf(_class); `n
+    `} `{else
+      `t const  struct  `meta *  desc  =  ` \
+                  AtCast( `meta (),  _class); `n
+    `}n
+  `}n
+`}n
+
+% va_start      // if necessary, initialize argument list variable
+
+`{ifnot `,... `
+`t  va_start(ap,  `_last );
+`}n
+
+% ifmethod      // check if method exists
+
+`t AtAssert(desc -> `method ); `n
+
+% call          // call the method, if necessary assign result
+
+`t `{ifnot `result void result  =  `} \
+desc -> `method ( `%args ); `n
+
+% args          // arguments to method
+
+`{() `_ `name `}, `{ifnot `,... ` ,  &  ap `}
+
+% va_end        // if necessary, reset argument list variable
+
+`{ifnot `,... `
+`t  va_end(ap);
+`}n
+
+% return        // if necessary, return result variable
+
+`{ifnot `result void
+`t return  result;
+`}n
+
+% super-selector    // superclass selector
+
+`%super-header `n { `n
+`{if `meta `metaroot    // can use super()
+  `{if `linkage %+ // class methods
+    `t const  struct  `meta *  superdesc  =  AtSuper(_class); `n
+  `} `{else       // other methods
+    `t const  struct  `meta *  superdesc  =  AtSuper(_class); `n
+  `}fi
+
+
+`} `{else               // must cast
+  `{if `linkage %+ // class methods
+    `t const  struct  `meta *  superdesc  =  ` \
+                  AtCast( `meta (),  AtSuper(_class)); `n
+  `} `{else       // other methods
+    `t const  struct  `meta *  superdesc  =  ` \
+                  AtCast( `meta (),  AtSuper(_class)); `n
+  `}fi   
+
+`} `n
+`%checks
+
+`t AtAssert(superdesc -> `method ); `n
+`t `{ifnot `result void return  `} \
+        superdesc -> `method \
+    ( `{() `{ifnot `_ _  `name `} `{else `{if `linkage %+ superdesc `} `{else _self `}fi `}fi `}, `{ifnot `,... ` ,  app `} ); `n
+} `n `n
+
+

@@ -1,0 +1,61 @@
+// note that 'ctor' and its calling convention is burnt into this file
+//
+% init          // implement %init request
+
+`{dcl
+  `{ifnot `class `
+
+    `{if `newmeta 1
+
+      `%selectors
+
+      static  void  *  meta _AtConstruct  (void  *  _self,  va_list  *  args)  `n { `n
+    `t struct  `meta  *  self  =  super_AtConstruct( `meta (),  _self,  args); `n
+    `t typedef  void  (*  voidf)  (); `n
+    `t voidf  selector; `n
+    `t va_list  ap; `n `n
+    `t va_copy(ap, *args); `n `n
+
+        `%meta-ctor-loop
+
+        `%abstract-check-loop
+        
+    `t return  self; `n
+      } `n `n
+
+    static  const  void  *  _ `meta  =  null; `n `n
+
+    const  void*  `%const `meta  (void)  `n { `n
+    `t  return  _ `meta  ?  _ `meta  : `n
+    `t  `t  (_ `meta  =  AtNew( `metaroot (), `n
+    `t  `t  `t " `meta ",  `supermeta (),  `n
+    `t  `t  `t sizeof(struct  `meta ), `n
+    `t  `t  `t AtConstruct,  meta _AtConstruct, `n
+               `{links `meta
+    `t  `t  `t `method ,  meta _ `method , `n
+               `}
+    `t  `t  `t (void  *)  0)); `n
+      } `n `n
+
+    `}fi
+
+    static  const  void  *  _ `class  =  null; `n `n
+
+    const  void*  `%const `class Desc  (void)  `n { `n
+    `t  return  _ `class  ?  _ `class  : `n
+    `t  `t  (_ `class  =  AtNew( `meta (), `n
+    `t  `t  `t " `class ",  `super Desc (),  `n
+    `t  `t  `t sizeof(struct  `class ), `n
+    `t  `t  `t /*  Remove  each  dynamically-linked  method  as  desired  */ `n
+               `{links `class
+                   `{if `linkage %-  
+    `t  `t  `t /* `method ,  self _ `method , */ `n
+                   `} `{else
+    `t  `t  `t /* `method ,  class _ `method , */ `n
+                   `}fi
+               `}
+    `t  `t  `t (void  *)  0)); `n
+    } `n
+
+  `}fi
+`}dcl

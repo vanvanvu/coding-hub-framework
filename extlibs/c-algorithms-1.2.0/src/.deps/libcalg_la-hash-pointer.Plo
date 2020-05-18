@@ -1,0 +1,6 @@
+libcalg_la-hash-pointer.lo: hash-pointer.c /usr/include/stdc-predef.h \
+ hash-pointer.h
+
+/usr/include/stdc-predef.h:
+
+hash-pointer.h:

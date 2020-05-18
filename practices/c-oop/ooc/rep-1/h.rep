@@ -1,0 +1,76 @@
+% -h            // implement -h option
+
+/*----------------------------------------------------------------------------- `n
+ *  COPYRIGHT  (C)  2013-2014  Arrive  Technologies  Inc.  `n
+ *  `n
+ *  The  information  contained  herein  is  confidential  property  of  Arrive  `n
+ *  Technologies.  The  use,  copying,  transfer  or  disclosure  of  such  information  is  `n
+ *  prohibited  except  by  express  written  agreement  with  Arrive  Technologies.  `n
+ *  `n
+ *  File         :  `class .h `n
+ *  Description  :  This  file  contains  interfaces  for  `class  class. `n
+ *  History      : `n
+ *                `date `t Initial  version  `n
+ *  `n
+ *----------------------------------------------------------------------------*/ `n `n
+
+#ifndef  `class _H `n
+#define  `class _H `n `n
+
+#ifdef  __cplusplus  `n
+extern  "C"  {  `n
+#endif  `n `n
+
+/* `t Super class `t */ `n
+#include  " `super .h" `n `n
+
+`{pub
+  `{if `class `
+    `line `n
+  `} `{else `n
+    /**  @brief  Data  type  for  `class  class  */ `n
+    typedef  AtAny  `class ; `n `n 
+
+    /**  @brief  Class  descriptor  for  `class  class  */ `n
+    extern  const  AtAny*  `%const `class Desc (void); `n `n
+
+    `{% 
+      /** `n
+        *  @brief `n
+        *  @param  [in] `n
+        *  @param  [out] `n
+        *  @retval `n
+        *  @retval `n
+        */ `n
+     AT_FINAL  `%header ; `n `n `}n
+
+    `{if `newmeta 1
+      `{%- 
+        /** `n
+          *  @brief `n
+          *  @param  [in] `n
+          *  @param  [out] `n
+          *  @retval `n
+          *  @retval `n
+          */ `n
+       AT_VIRTUAL  `%header ; `n `n `}n
+       
+      `{%+ 
+        /** `n
+          *  @brief `n
+          *  @param  [in] `n
+          *  @param  [out] `n
+          *  @retval `n
+          *  @retval `n
+          */ `n
+       AT_CLASS  `%header ; `n `n `}n
+    `}
+
+  `}fi
+`}n
+
+#ifdef  __cplusplus  `n
+} `n
+#endif `n
+
+#endif `t /* `t `class _H `t */ `n
